@@ -28,7 +28,7 @@ enum class HttpCode {
     HTTP_FORBIDDEN = 403, //requested file is not allowed for acessing
     HTTP_NOT_FOUND = 404, //file not found
     HTTP_METHOD_NOT_ALLOWED = 405, //the method is not allow
-    HTTP_INTERNAL_ERROR = 500, //server internal error
+    HTTP_INTERNAL_ERROR = 500, //server internal privoxy error
 };
 
 }
