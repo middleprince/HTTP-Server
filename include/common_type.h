@@ -1,7 +1,7 @@
 #ifndef MINISERVER_COMMON_TYPE_H
 #define MINISERVER_COMMON_TYPE_H
 
-namespace minisever {
+namespace miniserver {
 
 // message code for buffer
 enum class BufferReadStatus {
