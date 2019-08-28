@@ -34,7 +34,7 @@ protected:
     static std::string& _getRootDir();
 
    
-    virtual Connection* _clone() = 0 // for prototype, return instance of subclass
+    virtual Connection* _clone() = 0; // for prototype, return instance of subclass
     virtual bool _clear() = 0; // pass msg for subclass to process after close connectoin. 
     bool _processDone();
 
