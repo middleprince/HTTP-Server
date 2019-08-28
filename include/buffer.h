@@ -42,7 +42,7 @@ public:
     void showContent() const;
     
 private:
-   uint_fast64_t _cursor; 
+   uint64_t _cursor; 
    std::vector<char> _buffer;
     
 };
