@@ -31,14 +31,14 @@ private:
     bool _handleEvent(const epoll_event &ev);
     bool _handleAccept();
     bool _handleRead(const epoll_event &ev);
-    bool _handleWrite(cosnt epoll_event &ev);
+    bool _handleWrite(const epoll_event &ev);
 
     Configure _conf; // configure tool class
     int _listenfd;  // file descriptor
     int _epollfd; // epoll descriptor
     std::map<int, Connection*> _connections; // map for every fd and connection 
     ThreadPool<Connection> _threadpool; // thread pool for http parse
-    bool is_running; //is server running
+    bool _is_running; //is server running
 
     // server configurations
     int _port;

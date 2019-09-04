@@ -9,11 +9,12 @@
 namespace miniserver {
 
 class FdHandler {
+public:
     FdHandler() = default;
     ~FdHandler() = default;
 
     static int setNonblock(int fd);
-    static bool addFd(int epollfd, int fd);
+    static bool addFd(int epollfd, int fd, bool one_shot);
     static bool removeFd(int epollfd, int fd);
     static bool modFd(int epollfd, int fd, int ev);
 };

@@ -16,7 +16,7 @@ public:
     static void initRootDir(const std::string &root_dir);
 
     static int getEpollfd();
-    static void setEpollfd();
+    static void setEpollfd(int epollfd);
     
     bool connectionClose();
     bool connectionRead();
@@ -47,7 +47,7 @@ protected:
 private:
     static Connection* _prototype;
     static int _epollfd;
-    static std:string _root_dir;
+    static std::string _root_dir;
 
     Buffer _read_buffer;
     Buffer _write_buffer;
