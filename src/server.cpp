@@ -127,7 +127,7 @@ bool Server::run() {
     if (events == nullptr) {
         LOG(WARNING) << "[Server::run]: epoll_event new  exception";
         return false;
-    }_
+    }
 
     std::shared_ptr<epoll_event> events_ptr_guard(events);
 
@@ -164,4 +164,53 @@ bool Server::run() {
     return true;
 }
 
+bool Server::_handleEvent(const epoll_event &ev) {
+    if (ev.data.fd == __listendfd) {
+        // new connction arrive
+        if (_is_running) {
+            if (!_handleAccept()) {
+                LOG(WARNING) << "[Server::_handleEvent]: _handleAccept failed"
+                             << " reject the new connection which fd is:" << ev.data.fd;
+            } 
+        }else {
+            // service stoped when new connection arrives.
+            LOG(INFO) << "[Server::_handleEvent]: server has been closed";
+            return false;
+        }
+    } 
+    else if (ev.events & EPOLLIN) {
+        // read event happend
+        if (!_handleRead(ev))  {
+            LOG(WARNING) << "[Server::_handleEvent]: _handleRead failed";
+            return false;
+        
+        }
+    }
+    else if (ev.events & EPOLLOUT) {
+        // write event happend
+        if (!_handleWrite(ev))  {
+            LOG(WARNING) << "[Server::_handleEvent]: _handleWrite failed";
+            return false;
+        
+        }
+    }
+    else if (ev.events & (EPOLLOUT | EPOLLHUP | EPOLLERR) {
+        if (!_closeConnection(ev.data.fd))  {
+            LOG(WARNING) << "[Server::_handleEvent]: _closeConnection failed";
+            return false;
+        }
+    }
+    else {
+    // unkonwn error happend
+        LOG(WARNING) << "[Server::_handleEvent]: unknown event happend";
+        return false;
+          
+    }
+    return fasle;
+}
+
+bool Server::_handleAccept() {
+    sockaddr_in client_addr;
+    socklen_t addr_len = sizeof(client_addr);
+    
 }
