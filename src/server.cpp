@@ -212,5 +212,88 @@ bool Server::_handleEvent(const epoll_event &ev) {
 bool Server::_handleAccept() {
     sockaddr_in client_addr;
     socklen_t addr_len = sizeof(client_addr);
+    int connfd = accept(_listedfd, reinterpret_cast<sockaddr*>(&client_addr), &addr_len);
+    if (connfd == -1) {
+        LOG(WARNING) << "[Server::_handleAccept]: accept failed";
+        return false;
+    }
+
+    // initialize the connection of this describer, 
+    // create the connection if it does not exist
+    if (_conections.find(connfd) == _connections.end() || 
+            _connections[connfd] == nullptr) {
+        // instanlitialize by prototype 
+       _connections[connfd] = Connection::newInstace(); 
+       if (_conncetions[connfd] == nullptr) {
+            LOG(WARNING) << "[Server::_handleAccept]: connection alloc memory  failed";
+            return false;
+       }
+       
+    }
+    else {
+        // colse the connfd if it exist in connection pool.
+        _connections[connfd]->connectionClose(); 
+    } 
+
+    _connections[connfd]->setConnfd(connfd);
+    // when using oneshot mode, after first event happend ,
+    // the corresponding file descriptor will not receive notification
+    if (!FdHandler::addFd(_epollfd, connfd, true)) {
+        LOG(WARNING) << "[Server::_handleAccept]: addFd failed";
+        return false;
+    }
+
+    return ture;
+}      _
+
+bool Server::_handleRead(const epoll_event &ev) {
+    int sockfd = ev.data.fd;
+    if (_connections.find(sockfd) == _connections.end() ||
+            _connections[sockfd] == nullptr) {
+            
+        LOG(WARNING) << "[Server::_handleRead]: can not find fd:" << 
+            sockfd << "in connection pool";
+        return false;
+    }
+
+    if (!_connections[sockfd]->connectionRead()) {
+        LOG(WARNING) << "[Server::_handleRead]: connection reaad failed";
+        if (!_closeConnection(sockfd)) {
+            LOG(WARNING) << "[Server::_handleRead]: _closeConnection  failed";
+        }
+        return false;
+    }
+
+    if (!_threadpool.append(_connections[sockfd])) {
+        LOG(WARNING) << "[Server::_handleRead]: _thredPool addConnection  failed";
+        if (!_closeConnection[sockfd]) {
+            LOG(WARNING) << "[Server::_handleRead]: _closeConnection  failed";
+        }
+        return false;
+    }
     
+    return true;
 }
+
+bool Server::_handleWrite(const epoll_event &ev) {
+    int sockfd = ev.data.fd;
+    if (_connections.find(sockfd) == _connections.end() ||
+            _connections[sockfd] == nullptr) {
+            
+        LOG(WARNING) << "[Server::_handleWrite]: can not find fd:" << 
+            sockfd << "in connection pool";
+        return false;
+    }
+
+    if (!_connections[sockfd]->connectionWrite()) {
+        LOG(WARNING) << "[Server::_handleRead]: connection write failed";
+        if (!_closeConnection(sockfd)) {
+            LOG(WARNING) << "[Server::_handleRead]: _closeConnection  failed";
+        }
+        return false;
+    } 
+
+    return true;
+}
+
+} //namespace miniserver
