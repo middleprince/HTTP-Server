@@ -37,7 +37,7 @@ public:
     BufferReadStatus getLine(std::string *line);
     bool readUtilEnd(std::string *content); // read all data 
     void* currentAddr() const; 
-    uint64_t letfBytes() const;
+    uint64_t leftBytes() const;
 
     void showContent() const;
     

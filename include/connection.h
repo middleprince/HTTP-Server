@@ -38,11 +38,11 @@ protected:
     virtual bool _clear() = 0; // pass msg for subclass to process after close connectoin. 
     bool _processDone();
 
-    bool _dumpRead(Buffer *other); // read/write buffter to other buffer
-    bool _dumpWrite(Buffer *other);
+    bool _dumpRead(Buffer *other_buffer); // read/write buffter to other buffer
+    bool _dumpWrite(Buffer *other_buffer);
 
-    bool _dumpToRead(Buffer &other); // other buffer to read/write buffer
-    bool _dumpToWrite(Buffer &other);
+    bool _dumpToRead(Buffer &other_buffer); // other buffer to read/write buffer
+    bool _dumpToWrite(Buffer &other_buffer);
     
 private:
     static Connection* _prototype;
