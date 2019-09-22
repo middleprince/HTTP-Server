@@ -133,9 +133,69 @@ void HttpRequest::setMethod(const std::string &method) {
 void HttpRequest::setUrl(const std::string &url) {
     _url = url;
 }
+
 void HttpRequest::setVersion(const std::string &version) {
     _version = version;
 }
+
+
+//==============================================================================
+//          HttpRespose src
+//==============================================================================
+
+HttpResponse::HttpResponse() : HttpMessage(), 
+    _status(" "), _info(" "), _version("") {}
+
+HttpResponse::~HttpResponse() = default;
+
+HttpResponse::HttpResponse(const HttpResponse &other) : 
+    HttpMessage(other), 
+    _status(other._status),
+    _info(other._info),
+    _version(other._version) {}
+
+HttpResponse& HttpResponse::operator=(const HttpResponse &rhs) {
+    if (this != &rhs) {
+        HttpMessage::operator=(rhs);
+      _status = rhs._status;  
+      _info = rhs._info;
+      _version = rhs._version;
+    }
+    return *this;
+}
+
+void HttpResponse::clear() {
+    HttpMessage::clear();
+    _status.clear();
+    _info.clear();
+    _version.clear();
+}
+
+const std::string& HttpResponse::getStatus() const {
+    return _status;
+}
+
+const std::string& HttpResponse::getInfo() const {
+    return _info;
+}
+const std::string& HttpResponse::getVersion() const {
+    return _version;
+}
+
+void HttpResponse::setStatus(const std::string &method) {
+    _status = method;
+}
+
+void HttpResponse::setInfo(const std::string &url) {
+    _info = url;
+}
+
+void HttpResponse::setVersion(const std::string &version) {
+    _version = version;
+}
+
+
+
 
 
 } // namespace miniserver
